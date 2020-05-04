@@ -9,8 +9,6 @@ import { MDBContainer,
  } from "mdbreact";
  import axios from 'axios';
 
- 
-
 
 function Summer(props) {
 
@@ -21,6 +19,42 @@ function Summer(props) {
    const [postStatusMessage, setPostStatusMessage] = useState('');
    const [getStatusMessage, setGetStatusMessage] = useState('');
    const [getMetric, setGetMetric] = useState('');
+   const [postButton, setPostButton] = useState(true);
+   const [fetchButton, setFetchButton] = useState(true);
+
+
+   const postButtonOrSpinner = () => {
+        if(postButton) {
+            return(
+                <MDBBtn gradient="aqua" type="submit" onClick = {() => postValueFunction()} >
+                        {buttonText}
+                </MDBBtn>
+            );
+        }
+
+        return(
+            <div className="spinner-grow text-info" role="status">
+                <span className="sr-only">Loading...</span>
+            </div>
+        )
+   }
+
+
+   const fetcButtonOrSpinner = () => {
+    if(fetchButton) {
+        return(
+            <MDBBtn gradient="aqua" type="submit" onClick={()=> {getValueFunction()}} >
+                {buttonText}
+            </MDBBtn>
+        );
+    }
+
+    return(
+        <div className="spinner-grow text-info" role="status">
+            <span className="sr-only">Loading...</span>
+        </div>
+    )
+}
 
 
    const onInputs = (event) => {
@@ -82,6 +116,9 @@ function Summer(props) {
         return;
     }
 
+
+    setPostButton(false);
+
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8'
@@ -99,6 +136,7 @@ function Summer(props) {
                         setPostStatusMessage(response.data.error || response.data.message);
                         setPostMetric('');
                         setPostValue('');
+                        setPostButton(true);
                     
 
                 }).catch(error => {
@@ -106,6 +144,7 @@ function Summer(props) {
                     setPostStatusMessage(error.message);
                     setPostMetric('');
                     setPostValue('');
+                    setPostButton(true);
                 })
             
         
@@ -118,6 +157,8 @@ function Summer(props) {
         setGetStatusMessage('Kindly Fill the metric key input');
         return;
     }
+
+    setFetchButton(false);
 
     let axiosConfig = {
         headers: {
@@ -134,6 +175,7 @@ function Summer(props) {
 
                         setGetStatusMessage(response.data.error || response.data.data);
                         setGetMetric('');
+                        setFetchButton(true);
                      
                     
 
@@ -141,6 +183,7 @@ function Summer(props) {
              
                     setGetStatusMessage(error.message);
                     setGetMetric('')
+                    setFetchButton(true);
                 })
             
         
@@ -201,9 +244,7 @@ function Summer(props) {
 
                         
                             <div className="text-right py-4">
-                                <MDBBtn gradient="aqua" type="submit" onClick = {() => postValueFunction()} >
-                                    {buttonText}
-                                </MDBBtn>
+                                {postButtonOrSpinner()}
                             </div>
                         </MDBCardBody>
                     
@@ -248,9 +289,7 @@ function Summer(props) {
                     {showGetStatusMessage()}
                 
                     <div className="text-right py-4">
-                        <MDBBtn gradient="aqua" type="submit" onClick={()=> {getValueFunction()}} >
-                            {buttonText}
-                        </MDBBtn>
+                       {fetcButtonOrSpinner()}
                     </div>
                 </MDBCardBody>
             
